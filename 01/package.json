@@ -1,0 +1,12 @@
+{
+  "name": "aoc-2021-01",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Guillaume Gouessan",
+  "license": "ISC"
+}
