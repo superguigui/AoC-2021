@@ -1,12 +1,12 @@
 {
-  "name": "aoc-2021-02",
+  "name": "02",
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "main": "1.js",
   "scripts": {
-    "start": "node 1.js & node 2.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Guillaume Gouessan",
+  "author": "",
   "license": "ISC"
 }
