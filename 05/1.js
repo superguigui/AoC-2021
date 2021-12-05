@@ -9,24 +9,21 @@ fs.readFile('./input.txt', (err, data) => {
 			l.split(' -> ').map((p) => p.split(',').map((n) => parseFloat(n)))
 		);
 
-	const gridSize = [0, 0];
+	const size = [0, 0];
 	for (const l of lines) {
-		gridSize[0] = Math.max(gridSize[0], l[0][1], l[1][1]);
-		gridSize[1] = Math.max(gridSize[1], l[0][0], l[1][0]);
+		size[0] = Math.max(size[0], l[0][1], l[1][1]);
+		size[1] = Math.max(size[1], l[0][0], l[1][0]);
 	}
-	const size = Math.max(gridSize[0] + 1, gridSize[1] + 1);
 
-	const grid = Array(size)
+	const grid = Array(size[0] + 1)
 		.fill(0)
 		.map(() =>
-			Array(size)
+			Array(size[1] + 1)
 				.fill(0)
 				.map(() => 0)
 		);
 
-	lines.forEach((l) => {
-		runHVLine(grid, l);
-	});
+	lines.forEach((l) => runLine(grid, l));
 
 	let firstStar = 0;
 	for (const l of grid) {
@@ -39,20 +36,12 @@ fs.readFile('./input.txt', (err, data) => {
 	console.log({ firstStar });
 });
 
-function runHVLine(grid, line) {
-	if (line[0][0] === line[1][0]) {
-		const x = line[0][0];
-		const y1 = Math.min(line[0][1], line[1][1]);
-		const y2 = Math.max(line[0][1], line[1][1]);
-		for (let y = y1; y <= y2; y++) {
-			grid[y][x] += 1;
-		}
-	} else if (line[0][1] === line[1][1]) {
-		const y = line[0][1];
-		const x1 = Math.min(line[0][0], line[1][0]);
-		const x2 = Math.max(line[0][0], line[1][0]);
-		for (let x = x1; x <= x2; x++) {
-			grid[y][x] += 1;
-		}
+function runLine(grid, [[x1, y1], [x2, y2]]) {
+	if (x1 === x2) {
+		for (let y = Math.min(y1, y2), l = Math.max(y1, y2); y <= l; y++)
+			grid[y][x1]++;
+	} else if (y1 === y2) {
+		for (let x = Math.min(x1, x2), l = Math.max(x1, x2); x <= l; x++)
+			grid[y1][x]++;
 	}
 }
