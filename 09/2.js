@@ -33,14 +33,14 @@ fs.readFile('./input.txt', (err, data) => {
 
 function flood(a, low, w, h) {
 	const flooded = Array(a.length).fill(0);
-	flooded[low] = 1;
+	const neighbors = [low];
 
-	const neighbors = getNeighbors(a, low, w, h, flooded);
 	while (neighbors.length) {
 		const n = neighbors.shift();
 		flooded[n] = 1;
 		neighbors.push(...getNeighbors(a, n, w, h, flooded));
 	}
+
 	return countFlood(flooded, w, h);
 }
 
