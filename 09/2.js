@@ -50,19 +50,19 @@ function getNeighbors(a, i, w, h, flooded) {
 		neighbors = [];
 	if (y > 0) {
 		const j = (y - 1) * w + x;
-		if (flooded[j] === 0 && a[j] < 9) neighbors.push(j);
+		if (flooded[j] === 0 && ~~a[j] < 9) neighbors.push(j);
 	}
 	if (y < h - 1) {
 		const j = (y + 1) * w + x;
-		if (flooded[j] === 0 && a[j] < 9) neighbors.push(j);
+		if (flooded[j] === 0 && ~~a[j] < 9) neighbors.push(j);
 	}
 	if (x > 0) {
 		const j = y * w + x - 1;
-		if (flooded[j] === 0 && a[j] < 9) neighbors.push(j);
+		if (flooded[j] === 0 && ~~a[j] < 9) neighbors.push(j);
 	}
 	if (x < w - 1) {
 		const j = y * w + x + 1;
-		if (flooded[j] === 0 && a[j] < 9) neighbors.push(j);
+		if (flooded[j] === 0 && ~~a[j] < 9) neighbors.push(j);
 	}
 	return neighbors;
 }
