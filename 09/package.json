@@ -5,8 +5,13 @@
   "type": "module",
   "main": "1.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "viz": "canvas-sketch viz.js --output=tmp --stream=gif"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "canvas-sketch": "^0.7.4",
+    "load-asset": "^1.2.0",
+    "nice-color-palettes": "^3.0.0"
+  }
 }
