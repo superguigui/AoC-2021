@@ -1,0 +1,47 @@
+#app {
+	font-family: monospace;
+}
+span {
+	display: inline-block;
+	padding: 0 3px;
+}
+.c0 {
+	background: yellow;
+	color: yellow;
+}
+.c1 {
+	background: #50518e;
+	color: #50518e;
+}
+.c2 {
+	background: #665194;
+	color: #665194;
+}
+.c3 {
+	background: #7d4f98;
+	color: #7d4f98;
+}
+.c4 {
+	background: #944b98;
+	color: #944b98;
+}
+.c5 {
+	background: #ab4694;
+	color: #ab4694;
+}
+.c6 {
+	background: #c1408d;
+	color: #c1408d;
+}
+.c7 {
+	background: #d53a82;
+	color: #d53a82;
+}
+.c8 {
+	background: #e53674;
+	color: #e53674;
+}
+.c9 {
+	background: red;
+	color: red;
+}
