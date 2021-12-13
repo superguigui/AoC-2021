@@ -7,8 +7,8 @@ input.forEach((l) => {
 	const v = l.split(',');
 	if (v.length === 2) coords.push(v.map(Number));
 	else if (l !== '') {
-		const fold = l.split('=');
-		folds.push([fold[0].replace('fold along ', ''), Number(fold[1])]);
+		const [axis, value] = l.split('=');
+		folds.push([axis.replace('fold along ', ''), Number(value)]);
 	}
 });
 
@@ -16,11 +16,9 @@ console.log({
 	firstStar: fold(coords, folds[0][0] === 'x', folds[0][1]).length,
 });
 
-let coords2 = [...coords];
-folds.forEach(
-	([axis, value]) => (coords2 = fold(coords2, axis === 'x', value))
+print(
+	folds.reduce((res, [axis, value]) => fold(res, axis === 'x', value), coords)
 );
-print(coords2);
 
 function fold(arr, isX, value) {
 	const res = arr.map(([x, y]) =>
