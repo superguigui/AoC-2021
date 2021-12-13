@@ -11,29 +11,24 @@ const removeFromEnd = (arr, s) => {
 	return arr;
 };
 
-fs.readFile('./input.txt', (err, data) => {
-	if (err) throw err;
-	const input = data
-		.toString()
-		.split('\n')
-		.map((a) => a.split('-'));
+const input = fs
+	.readFileSync('./input.txt', 'utf-8')
+	.split('\n')
+	.map((c) => c.split('-'));
 
-	const links = {};
-	input.forEach(([from, to]) => {
-		if (!links[from]) links[from] = [];
-		if (!links[to]) links[to] = [];
-		links[from].push(to);
-		links[to].push(from);
-	});
-	const nodes = [...new Set(input.flat())];
-	const mins = [
-		null,
-		...nodes.filter((a) => a !== 'start' && a !== 'end' && !isU(a)),
-	];
-	console.log({
-		secondStar: [...new Set(mins.map((a) => resolve(a, links, nodes)).flat())]
-			.length,
-	});
+const links = {};
+input.forEach(([from, to]) => {
+	links[from] = links[from] ? [...links[from], to] : [to];
+	links[to] = links[to] ? [...links[to], from] : [from];
+});
+const nodes = [...new Set(input.flat())];
+const mins = [
+	null,
+	...nodes.filter((a) => a !== 'start' && a !== 'end' && !isU(a)),
+];
+console.log({
+	secondStar: [...new Set(mins.map((a) => resolve(a, links, nodes)).flat())]
+		.length,
 });
 
 function resolve(min, links, nodes) {
