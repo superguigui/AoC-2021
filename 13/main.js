@@ -32,11 +32,6 @@ function fold(arr, isX, value) {
 }
 
 function print(values) {
-	const canvas = document.getElementById('app');
-	const ctx = canvas.getContext('2d');
-	canvas.width = 256;
-	canvas.height = 256;
-	canvas.style.width = canvas.width * 4 + 'px';
-	canvas.style.height = canvas.height * 4 + 'px';
+	const ctx = document.getElementById('app').getContext('2d');
 	values.forEach(([x, y]) => ctx.fillRect(x, y, 1, 1));
 }
