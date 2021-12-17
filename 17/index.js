@@ -51,7 +51,7 @@ function getMinVx() {
 const minVX = getMinVx();
 const maxVX = rx[1] + 1;
 
-for (let x = minVX; x <= maxVX; x++) {
+for (let x = minVX; x < maxVX; x++) {
 	// didn't even bother to find ideal y range, just shooted large enough
 	for (let y = -500; y < 500; y++) {
 		solve([x, y]);
