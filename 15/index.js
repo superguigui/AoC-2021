@@ -2,146 +2,56 @@ import fs from 'fs';
 
 const data = fs.readFileSync('./input.txt', 'utf-8');
 
-function shortestIn(list, dist) {
-	let min = Infinity;
-	let res;
-	for (let i = 0, l = list.length; i < l; i++) {
-		const v = list[i];
-		const d = dist[v];
-		if (d < min) {
-			min = d;
-			res = v;
-		}
-	}
-	return res;
-}
+const getNeighbors = (y, x, h, w) => {
+	const neighbors = [];
+	if (y > 0) neighbors.push([x, y - 1]);
+	if (y < h) neighbors.push([x, y + 1]);
+	if (x > 0) neighbors.push([x - 1, y]);
+	if (x < w) neighbors.push([x + 1, y]);
+	return neighbors;
+};
+const coordsToKey = (a) => a.join(',');
+const keyToCoords = (a) => a.split(',').map(Number);
 
-function makeGraph(input) {
-	const graph = {};
-	for (let y = 0, h = input.length - 1; y <= h; y++) {
-		const line = input[y];
-		for (let x = 0, w = line.length - 1; x <= w; x++) {
-			const neighbors = {};
-			if (y > 0) {
-				neighbors[x + ',' + (y - 1)] = Number(input[y - 1][x]);
-			}
-			if (y < h) {
-				neighbors[x + ',' + (y + 1)] = Number(input[y + 1][x]);
-			}
-			if (x > 0) {
-				neighbors[x - 1 + ',' + y] = Number(input[y][x - 1]);
-			}
-			if (x < w) {
-				neighbors[x + 1 + ',' + y] = Number(input[y][x + 1]);
-			}
-			graph[x + ',' + y] = neighbors;
-		}
-	}
-	return graph;
-}
+function djikstra(grid) {
+	const h = grid.length - 1;
+	const w = grid[0].length - 1;
+	const keyStart = '0,0';
+	const keyEnd = coordsToKey([w, h]);
+	const minDist = { [keyStart]: 0 };
+	const visited = new Set();
+	const queue = [{ k: keyStart, d: 0 }];
 
-function djikstra(graph, start) {
-	const dist = {};
-	const prev = {};
-	const list = [];
+	while (queue.length > 0) {
+		const { k: u, d: dist } = queue.pop();
+		const [x, y] = keyToCoords(u);
 
-	Object.keys(graph).forEach((key) => {
-		dist[key] = Infinity;
-		prev[key] = [];
-		list.push(key);
-	});
-	dist[start] = 0;
-	const size = list.length;
-	while (list.length) {
-		const u = shortestIn(list, dist);
-		list.splice(list.indexOf(u), 1);
-		const node = graph[u];
-		const keys = Object.keys(node);
-		for (let i = 0; i < keys.length; i++) {
-			const v = keys[i];
-			const value = node[v];
-			if (list.indexOf(v) >= 0) {
-				const alt = Number(dist[u]) + Number(value);
-				if (alt < dist[v]) {
-					dist[v] = alt;
-					prev[v] = [...prev[v], u];
-				}
+		if (u === keyEnd) return dist;
+		if (visited.has(u)) continue;
+		visited.add(u);
+
+		const neighbors = getNeighbors(y, x, h, w);
+		for (const [xx, yy] of neighbors) {
+			const v = coordsToKey([xx, yy]);
+			if (visited.has(v)) continue;
+			const newDist = dist + grid[yy][xx];
+			if (minDist[v] === undefined || newDist < minDist[v]) {
+				minDist[v] = newDist;
+				queue.push({ k: v, d: newDist });
+				queue.sort((a, b) => b.d - a.d);
 			}
 		}
-		console.clear();
-		console.log(
-			'Djikstra\n' +
-				Math.round((1 - list.length / size) * 10000) / 10000 +
-				' - ' +
-				keys.length
-		);
 	}
-	console.clear();
-	return prev;
+	return Infinity;
 }
 
-function explore(prev, paths, path = [], u = undefined) {
-	if (prev[u] === undefined) return;
-	if (u === undefined || !prev[u].length) {
-		paths.push(path);
-		return paths;
-	}
-	prev[u].forEach((l) => {
-		path.splice(0, 0, l);
-		explore(prev, paths, [...path], l);
-		path.splice(path.indexOf(l), 1);
-	});
-}
+const grid = data.split('\n').map((l) => l.split('').map(Number));
+const [h, w] = [grid.length, grid[0].length];
+const expandedGrid = [...Array(h * 5)].map((_, y) =>
+	[...Array(w * 5)].map(
+		(_, x) => ((grid[y % h][x % w] + ~~(y / h) + ~~(x / w) - 1) % 9) + 1
+	)
+);
 
-function solve(input) {
-	const source = '0,0';
-	const target = input[input.length - 1].length - 1 + ',' + (input.length - 1);
-	const graph = makeGraph(input);
-	console.log('- graph ok');
-	const prev = djikstra(graph, source);
-	console.log('- djikstra ok');
-
-	const paths = [];
-	explore(prev, paths, [], target);
-	const correctPaths = paths.map((p) => {
-		p.splice(0, 1);
-		p.push(target);
-		return p;
-	});
-
-	const scores = correctPaths.map((path) =>
-		path
-			.map((a) => a.split(','))
-			.map(([x, y]) => Number(input[y][x]))
-			.reduce((a, b) => a + b, 0)
-	);
-	return scores.sort((a, b) => a - b)[0];
-}
-
-const input = data.split('\n');
-const fullGrid = [...input];
-const inputLines = input.length;
-for (let i = 0; i < 4; i++) {
-	for (let j = 0; j < inputLines; j++) {
-		const prev = fullGrid[i * inputLines + j];
-		fullGrid.push(
-			prev
-				.split('')
-				.map((a) => Math.max(1, (Number(a) + 1) % 10))
-				.join('')
-		);
-	}
-}
-const inputCols = input[0].length;
-for (let i = 0, l = fullGrid.length; i < l; i++) {
-	for (let j = 0; j < 4; j++) {
-		const prev = fullGrid[i].substr(j * inputCols, inputCols);
-		fullGrid[i] += prev
-			.split('')
-			.map((a) => Math.max(1, (Number(a) + 1) % 10))
-			.join('');
-	}
-}
-
-console.log({ firstStar: solve(input) });
-console.log({ secondStar: solve(fullGrid) });
+console.log({ firstStar: djikstra(grid) });
+console.log({ secondStar: djikstra(expandedGrid) });
